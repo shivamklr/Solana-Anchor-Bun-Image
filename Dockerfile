@@ -39,60 +39,12 @@ COPY --from=builder /root/.local/share/solana/install/active_release/bin /usr/lo
 COPY --from=builder /root/.avm /root/.avm
 COPY --from=builder /usr/bin /usr/bin
 
-# Create and run the path setup script
-RUN echo '#!/bin/bash \n\
-    set -euo pipefail \n\
-    \n\
-    NODE_VERSIONS_DIR="/root/.nvm/versions/node" \n\
-    \n\
-    check_directory() { \n\
-    if [ ! -d "$NODE_VERSIONS_DIR" ]; then \n\
-    echo "Error: Directory $NODE_VERSIONS_DIR does not exist" \n\
-    exit 1 \n\
-    fi \n\
-    } \n\
-    \n\
-    find_first_node_dir() { \n\
-    local first_dir \n\
-    first_dir=$(ls -1 "$NODE_VERSIONS_DIR" 2>/dev/null | head -n 1) \n\
-    \n\
-    if [ -z "$first_dir" ]; then \n\
-    echo "Error: No Node.js versions found in $NODE_VERSIONS_DIR" \n\
-    exit 1 \n\
-    fi \n\
-    \n\
-    echo "$NODE_VERSIONS_DIR/$first_dir" \n\
-    } \n\
-    \n\
-    add_to_bashrc() { \n\
-    local node_bin_path="$1/bin" \n\
-    local bashrc="/root/.bashrc" \n\
-    \n\
-    touch "$bashrc" \n\
-    \n\
-    if ! grep -q "PATH=$node_bin_path:\$PATH" "$bashrc"; then \n\
-    echo "# Added by node-path-script" >> "$bashrc" \n\
-    echo "export PATH=$node_bin_path:\$PATH" >> "$bashrc" \n\
-    echo "Successfully added Node.js bin directory to PATH in .bashrc" \n\
-    else \n\
-    echo "PATH entry already exists in .bashrc" \n\
-    fi \n\
-    } \n\
-    \n\
-    main() { \n\
-    check_directory \n\
-    local node_dir \n\
-    node_dir=$(find_first_node_dir) \n\
-    echo "Found Node.js directory: $node_dir" \n\
-    add_to_bashrc "$node_dir" \n\
-    } \n\
-    \n\
-    main' > /usr/local/bin/setup-node-path.sh && \
-    chmod +x /usr/local/bin/setup-node-path.sh && \
-    /usr/local/bin/setup-node-path.sh
+# Copy the script from your local directory into the container
+COPY setup-node-path.sh /root/setup-node-path.sh
 
-# Source .bashrc in interactive shells
-RUN echo 'source /root/.bashrc' >> /root/.bash_profile
+# Make it executable and run it
+RUN chmod +x /root/setup-node-path.sh && \
+    /root/setup-node-path.sh
 
 # Verify installations
 RUN . /root/.bashrc && \
