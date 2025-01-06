@@ -40,7 +40,18 @@ COPY --from=builder /usr/local/cargo/bin /usr/local/bin
 COPY --from=builder /root/.nvm/versions/node/ /root/.nvm/versions/node/
 COPY --from=builder /root/.local/share/solana/install/active_release/bin /usr/local/bin
 COPY --from=builder /root/.avm /root/.avm
-COPY --from=builder /usr/bin /usr/bin
+
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    unzip \
+    bzip2 \
+    build-essential \
+    python3 && \
+    apt-get autoclean && \
+    apt-get clean && \
+    apt-get autoremove \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy the script from your local directory into the container
 COPY setup-node-path.sh /root/setup-node-path.sh
