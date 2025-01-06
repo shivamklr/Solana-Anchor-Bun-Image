@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     unzip \
+    bzip2 \
     && rm -rf /var/lib/apt/lists/*
 
 # Install nvm and Node.js tools in a single layer
