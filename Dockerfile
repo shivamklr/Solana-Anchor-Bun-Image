@@ -1,5 +1,5 @@
 # Build stage for all tools
-FROM rust:1-slim-bookworm AS builder
+FROM rust:1.75-slim-bookworm AS builder
 
 # Avoid timezone prompts and set environment variables
 ENV DEBIAN_FRONTEND=noninteractive \
