@@ -34,31 +34,31 @@ RUN cargo install --git https://github.com/coral-xyz/anchor avm --force && \
     avm use latest
 
 # Final stage
-FROM rust:1-slim-bookworm
+# FROM rust:1-slim-bookworm
 
-COPY --from=builder /usr/local/cargo/bin /usr/local/bin
-COPY --from=builder /root/.nvm/versions/node/ /root/.nvm/versions/node/
-COPY --from=builder /root/.local/share/solana/install/active_release/bin /usr/local/bin
-COPY --from=builder /root/.avm /root/.avm
+# COPY --from=builder /usr/local/cargo/bin /usr/local/bin
+# COPY --from=builder /root/.nvm/versions/node/ /root/.nvm/versions/node/
+# COPY --from=builder /root/.local/share/solana/install/active_release/bin /usr/local/bin
+# COPY --from=builder /root/.avm /root/.avm
 
-RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    unzip \
-    bzip2 \
-    build-essential \
-    python3 && \
-    apt-get autoclean && \
-    apt-get clean && \
-    apt-get autoremove \
-    && rm -rf /var/lib/apt/lists/*
+# RUN apt-get update && apt-get install -y \
+#     git \
+#     curl \
+#     unzip \
+#     bzip2 \
+#     build-essential \
+#     python3 && \
+#     apt-get autoclean && \
+#     apt-get clean && \
+#     apt-get autoremove \
+#     && rm -rf /var/lib/apt/lists/*
 
-# Copy the script from your local directory into the container
-COPY setup-node-path.sh /root/setup-node-path.sh
+# # Copy the script from your local directory into the container
+# COPY setup-node-path.sh /root/setup-node-path.sh
 
-# Make it executable and run it
-RUN chmod +x /root/setup-node-path.sh && \
-    /root/setup-node-path.sh
+# # Make it executable and run it
+# RUN chmod +x /root/setup-node-path.sh && \
+#     /root/setup-node-path.sh
 
 # Verify installations
 RUN . /root/.bashrc && \
